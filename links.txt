@@ -1,0 +1,3 @@
+Video presentation (Google Drive, "Anyone with the link can view"): <PASTE LINK>
+Deployed application URL: https://csci341-assignment3-eosin.vercel.app
+Demo account credentials: none required (no authentication)
