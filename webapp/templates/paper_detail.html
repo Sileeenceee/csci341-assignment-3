@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Paper {{ p.paper_id }}: {{ p.title }}</h1>
+<p><a href="{{ url_for('paper_form', pid=p.paper_id) }}">Edit paper / authors / keywords</a> |
+<a href="{{ url_for('review_form', paper_id=p.paper_id) }}">Add review</a>
+<form class="inline" method="post" action="{{ url_for('paper_delete', pid=p.paper_id) }}" onsubmit="return confirm('Delete paper and all its versions, authorship, keywords and reviews?')"><button class="danger">Delete paper</button></form></p>
+<table style="max-width:900px">
+<tr><th>Conference / track</th><td>{{ p.acronym }} / {{ p.track }}</td></tr>
+<tr><th>Status</th><td>{{ p.status }}</td></tr>
+<tr><th>Session</th><td>{% if p.session_id %}<a href="{{ url_for('session_detail', sid=p.session_id) }}">{{ p.session_id }} – {{ p.session_title }}</a>{% else %}not scheduled{% endif %}</td></tr>
+<tr><th>Submitted</th><td>{{ p.submission_date }}</td></tr>
+<tr><th>Abstract</th><td>{{ p.abstract }}</td></tr>
+<tr><th>Keywords</th><td>{{ keywords|map(attribute='keyword')|join(', ') }}</td></tr>
+</table>
+<h2>Authors</h2>
+<table><tr><th>Pos</th><th>Author</th><th>Email</th><th>Corresponding</th></tr>
+{% for a in authors %}<tr><td>{{ a.author_position }}</td><td><a href="{{ url_for('user_detail', uid=a.author_id) }}">{{ a.name }}</a></td><td>{{ a.email }}</td><td>{{ 'yes' if a.is_corresponding }}</td></tr>{% endfor %}</table>
+
+<h2>Versions</h2>
+<table><tr><th>No</th><th>File location</th><th>Uploaded at</th><th>Change note</th><th>Actions</th></tr>
+{% for v in versions %}<tr>
+ <form method="post" action="{{ url_for('version_edit', pid=p.paper_id, v=v.version_no) }}">
+ <td>{{ v.version_no }}</td>
+ <td><input type="text" name="file_location" value="{{ v.file_location }}"></td>
+ <td><input type="datetime-local" name="uploaded_at" value="{{ v.uploaded_at.strftime('%Y-%m-%dT%H:%M') }}"></td>
+ <td><input type="text" name="change_note" value="{{ v.change_note or '' }}"></td>
+ <td><button>Update</button></form>
+ <form class="inline" method="post" action="{{ url_for('version_delete', pid=p.paper_id, v=v.version_no) }}"><button class="danger">Delete</button></form></td>
+</tr>{% endfor %}
+</table>
+<form method="post" action="{{ url_for('version_add', pid=p.paper_id) }}">
+<fieldset><legend>Add version</legend>
+ <label>Version number<input type="number" name="version_no" value="{{ next_v }}" min="1" required></label>
+ <label>File location<input type="text" name="file_location" value="papers/{{ p.paper_id }}/v{{ next_v }}.pdf" required></label>
+ <label>Uploaded at <span class="muted">(blank = now)</span><input type="datetime-local" name="uploaded_at"></label>
+ <label>Change note<input type="text" name="change_note"></label>
+ <button>Add version</button>
+</fieldset></form>
+
+<h2>Reviews</h2>
+<table><tr><th>ID</th><th>Reviewer</th><th>Score</th><th>Recommendation</th><th>Comments</th><th>Date</th><th></th></tr>
+{% for r in reviews %}<tr><td>{{ r.review_id }}</td><td>{{ r.reviewer }}</td><td>{{ r.overall_score }}</td><td>{{ r.recommendation }}</td><td>{{ r.comments_for_authors }}</td><td>{{ r.review_submission_date }}</td>
+<td><a href="{{ url_for('review_form', rid=r.review_id) }}">edit</a></td></tr>{% else %}<tr><td colspan=7>none</td></tr>{% endfor %}</table>
+{% endblock %}

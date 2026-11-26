@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Research Conference &amp; Paper Review Management</h1>
+<p>Simple administrative interface (CSCI 341 Assignment 3).</p>
+<table style="max-width:500px">
+ <tr><th>Users</th><td><a href="{{ url_for('users') }}">{{ counts.users }}</a></td></tr>
+ <tr><th>Papers</th><td><a href="{{ url_for('papers') }}">{{ counts.papers }}</a></td></tr>
+ <tr><th>Reviews</th><td><a href="{{ url_for('reviews') }}">{{ counts.reviews }}</a></td></tr>
+ <tr><th>Sessions</th><td><a href="{{ url_for('sessions') }}">{{ counts.sessions }}</a></td></tr>
+ <tr><th>Conferences</th><td><a href="{{ url_for('conferences') }}">{{ counts.conferences }}</a></td></tr>
+</table>
+<form method="post" action="{{ url_for('reset') }}" onsubmit="return confirm('Reset ALL data to the original seed dataset?')">
+ <button class="danger">Reset database to seed data</button>
+</form>
+{% endblock %}

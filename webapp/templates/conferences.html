@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Conferences (read-only reference data)</h1>
+<table><tr><th>ID</th><th>Acronym</th><th>Name</th><th>City</th><th>Country</th><th>Dates</th><th>Submission deadline</th><th>Review deadline</th><th>Hosts</th></tr>
+{% for c in confs %}<tr><td>{{ c.conference_id }}</td><td>{{ c.acronym }}</td><td>{{ c.name }}</td><td>{{ c.city }}</td><td>{{ c.country }}</td>
+<td>{{ c.start_date }} – {{ c.end_date }}</td><td>{{ c.submission_deadline }}</td><td>{{ c.review_deadline }}</td><td>{{ c.hosts }}</td></tr>{% endfor %}
+</table>
+<h2>Tracks</h2>
+<table><tr><th>ID</th><th>Conference</th><th>Name</th><th>Research area</th><th>Coordinator</th></tr>
+{% for t in tracks %}<tr><td>{{ t.track_id }}</td><td>{{ t.acronym }}</td><td>{{ t.name }}</td><td>{{ t.research_area }}</td><td>{{ t.coordinator }}</td></tr>{% endfor %}
+</table>
+<h2>Reviewer pools</h2>
+<table><tr><th>Conference</th><th>Reviewer</th></tr>
+{% for p in pools %}<tr><td>{{ p.acronym }}</td><td><a href="{{ url_for('user_detail', uid=p.user_id) }}">{{ p.user_id }} – {{ p.name }}</a></td></tr>{% endfor %}
+</table>
+{% endblock %}

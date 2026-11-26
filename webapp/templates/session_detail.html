@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Session {{ s.session_id }}: {{ s.title }}</h1>
+<p><a href="{{ url_for('session_form', sid=s.session_id) }}">Edit</a>
+<form class="inline" method="post" action="{{ url_for('session_delete', sid=s.session_id) }}" onsubmit="return confirm('Delete session?')"><button class="danger">Delete</button></form></p>
+<table style="max-width:700px">
+<tr><th>Conference</th><td>{{ s.acronym }} ({{ s.city }})</td></tr>
+<tr><th>Date / time</th><td>{{ s.session_date }} {{ s.start_time.strftime('%H:%M') }}–{{ s.end_time.strftime('%H:%M') }}</td></tr>
+<tr><th>Room</th><td>{{ s.room_label }}</td></tr><tr><th>Chair</th><td>{{ s.chair }}</td></tr>
+</table>
+<h2>Assigned papers</h2>
+<table><tr><th>ID</th><th>Title</th><th>Track</th><th>Status</th><th></th></tr>
+{% for p in papers %}<tr><td>{{ p.paper_id }}</td><td><a href="{{ url_for('paper_detail', pid=p.paper_id) }}">{{ p.title }}</a></td><td>{{ p.track }}</td><td>{{ p.status }}</td>
+<td><form class="inline" method="post" action="{{ url_for('session_unassign', sid=s.session_id, pid=p.paper_id) }}"><button>Unassign</button></form></td></tr>
+{% else %}<tr><td colspan=5>No papers (empty session)</td></tr>{% endfor %}</table>
+<form method="post" action="{{ url_for('session_assign', sid=s.session_id) }}"><fieldset><legend>Assign a paper</legend>
+ <select name="paper_id">
+ {% for p in papers_ref %}<option value="{{ p.paper_id }}">{{ p.paper_id }} – {{ p.title }} ({{ p.acronym }}, {{ p.status }})</option>{% endfor %}
+ </select>
+ <button>Assign</button>
+ <p class="muted">All papers are listed so that invalid assignments can be demonstrated; the application rejects them.</p>
+</fieldset></form>
+{% endblock %}

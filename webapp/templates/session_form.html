@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ 'Edit session %d'|format(sid) if sid else 'New session' }}</h1>
+<form method="post"><fieldset><legend>Session</legend>
+ <label>Conference<select name="conference_id" required>
+  {% for c in conferences %}<option value="{{ c.conference_id }}" {{ 'selected' if c.conference_id == form.conference_id }}>{{ c.acronym }} ({{ c.city }})</option>{% endfor %}
+ </select></label>
+ <label>Title<input type="text" name="title" value="{{ form.title or '' }}" required></label>
+ <label>Date<input type="date" name="session_date" value="{{ form.session_date or '' }}" required></label>
+ <label>Start time<input type="time" name="start_time" value="{{ form.start_time or '' }}" required></label>
+ <label>End time<input type="time" name="end_time" value="{{ form.end_time or '' }}" required></label>
+ <label>Room label<input type="text" name="room_label" value="{{ form.room_label or '' }}" required></label>
+ <label>Chair <span class="muted">(must be in the conference's reviewer pool)</span><select name="chair_id" required>
+  {% for r in reviewers %}<option value="{{ r.reviewer_id }}" {{ 'selected' if r.reviewer_id == form.chair_id }}>{{ r.reviewer_id }} – {{ r.name }}</option>{% endfor %}
+ </select></label>
+ <button>Save</button>
+</fieldset></form>
+{% endblock %}

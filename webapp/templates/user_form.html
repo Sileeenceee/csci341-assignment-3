@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ 'Edit user %d'|format(uid) if uid else 'New user' }}</h1>
+<form method="post">
+<fieldset><legend>User</legend>
+ <label>Given name<input type="text" name="given_name" value="{{ form.given_name or '' }}" required></label>
+ <label>Surname<input type="text" name="surname" value="{{ form.surname or '' }}" required></label>
+ <label>Email<input type="email" name="email" value="{{ form.email or '' }}" required></label>
+ <label>Affiliation<input type="text" name="affiliation" value="{{ form.affiliation or '' }}" required></label>
+ <label>Country<input type="text" name="country" value="{{ form.country or '' }}" required></label>
+ <label>Phone number<input type="text" name="phone_number" value="{{ form.phone_number or '' }}" required></label>
+</fieldset>
+<fieldset><legend><label style="display:inline"><input type="checkbox" name="is_author" {{ 'checked' if form.is_author }}> Author profile</label></legend>
+ <label>ORCID (optional)<input type="text" name="orcid" value="{{ form.orcid or '' }}"></label>
+ <label>Research areas <span class="muted">(comma-separated; stored as separate rows)</span>
+ <input type="text" name="research_areas" value="{{ form.research_areas or '' }}"></label>
+</fieldset>
+<fieldset><legend><label style="display:inline"><input type="checkbox" name="is_reviewer" {{ 'checked' if form.is_reviewer }}> Reviewer profile</label></legend>
+ <label>Years of reviewing experience<input type="number" name="years_experience" value="{{ form.years_experience if form.years_experience is not none else '' }}"></label>
+ <label>Expertise areas <span class="muted">(comma-separated)</span>
+ <input type="text" name="expertise" value="{{ form.expertise or '' }}"></label>
+ <label>Reviewer pools</label>
+ {% for c in conferences %}<label style="font-weight:normal"><input type="checkbox" name="pools" value="{{ c.conference_id }}" {{ 'checked' if c.conference_id in form.pools }}> {{ c.acronym }} ({{ c.city }})</label>{% endfor %}
+</fieldset>
+<button>Save</button>
+</form>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ 'Edit review %d'|format(rid) if rid else 'New review' }}</h1>
+<form method="post"><fieldset><legend>Completed review</legend>
+ <label>Paper<select name="paper_id" required>
+  {% for p in papers %}<option value="{{ p.paper_id }}" {{ 'selected' if p.paper_id == form.paper_id }}>{{ p.paper_id }} – {{ p.title }} ({{ p.acronym }}, {{ p.status }})</option>{% endfor %}
+ </select></label>
+ <label>Reviewer<select name="reviewer_id" required>
+  {% for r in reviewers %}<option value="{{ r.reviewer_id }}" {{ 'selected' if r.reviewer_id == form.reviewer_id }}>{{ r.reviewer_id }} – {{ r.name }}</option>{% endfor %}
+ </select></label>
+ <label>Overall score (1–5)<input type="number" name="overall_score" value="{{ form.overall_score or '' }}" required></label>
+ <label>Recommendation<select name="recommendation">
+  {% for r in ['accept','reject'] %}<option {{ 'selected' if r == form.recommendation }}>{{ r }}</option>{% endfor %}
+ </select></label>
+ <label>Comments for authors<textarea name="comments_for_authors" required>{{ form.comments_for_authors or '' }}</textarea></label>
+ <label>Confidential comments (optional)<textarea name="confidential_comments">{{ form.confidential_comments or '' }}</textarea></label>
+ <label>Submission date<input type="date" name="review_submission_date" value="{{ form.review_submission_date or '' }}" required></label>
+ <button>Save</button>
+</fieldset></form>
+{% endblock %}

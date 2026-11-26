@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ 'Edit paper %d'|format(pid) if pid else 'New paper' }}</h1>
+<form method="post">
+<fieldset><legend>Paper</legend>
+ <label>Track<select name="track_id" required>
+  {% for t in tracks %}<option value="{{ t.track_id }}" {{ 'selected' if t.track_id == form.track_id }}>{{ t.acronym }} – {{ t.name }}</option>{% endfor %}
+ </select></label>
+ <label>Title<input type="text" name="title" value="{{ form.title or '' }}" required></label>
+ <label>Abstract<textarea name="abstract" required>{{ form.abstract or '' }}</textarea></label>
+ <label>Submission date<input type="date" name="submission_date" value="{{ form.submission_date or '' }}" required></label>
+ <label>Status<select name="status">
+  {% for s in statuses %}<option {{ 'selected' if s == form.status }}>{{ s }}</option>{% endfor %}
+ </select></label>
+ <label>Session (only for accepted papers)<select name="session_id">
+  <option value="">— not scheduled —</option>
+  {% for s in sessions %}<option value="{{ s.session_id }}" {{ 'selected' if s.session_id == form.session_id }}>{{ s.acronym }} – {{ s.session_id }}: {{ s.title }}</option>{% endfor %}
+ </select></label>
+ <label>Keywords <span class="muted">(comma-separated)</span><input type="text" name="keywords" value="{{ form.keywords or '' }}" required></label>
+ {% if not pid %}<label>File location of version 1<input type="text" name="file_location" value="{{ form.file_location or '' }}" placeholder="papers/new/v1.pdf" required></label>{% endif %}
+</fieldset>
+<fieldset><legend>Authors (in order) – select the corresponding author</legend>
+ <table><tr><th>Position</th><th>Author</th><th>Corresponding</th></tr>
+ {% for i in range(author_rows) %}<tr><td>{{ i + 1 }}</td><td><select name="author_{{ i }}">
+   <option value="">—</option>
+   {% for a in authors %}<option value="{{ a.author_id }}" {{ 'selected' if a.author_id == form.author_ids[i] }}>{{ a.name }} ({{ a.email }})</option>{% endfor %}
+ </select></td><td><input type="radio" name="corresponding" value="{{ i }}" {{ 'checked' if i == form.corresponding }}></td></tr>{% endfor %}
+ </table>
+ <p class="muted">Empty rows are ignored; positions are renumbered 1..n.</p>
+</fieldset>
+<button>Save</button>
+</form>
+{% endblock %}
