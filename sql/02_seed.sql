@@ -13,7 +13,6 @@ INSERT INTO app_user (user_id, given_name, surname, email, affiliation, country,
  (12, 'Nurlan',  'Abenov',    'nurlan.abenov@example.com',   'Nazarbayev University',        'Kazakhstan', '+77010000012'),
  (13, 'Kenji',   'Tanaka',    'kenji.tanaka@example.com',    'University of Tokyo',          'Japan',      '+81300000013');
 
--- authors: 1,2,5,6,8,9,12,13   (2,6,9,12 are author-only)
 INSERT INTO author (author_id, orcid) VALUES
  (1, '0000-0001-0000-0001'), (2, '0000-0001-0000-0002'), (5, '0000-0001-0000-0005'),
  (6, NULL), (8, '0000-0001-0000-0008'), (9, '0000-0001-0000-0009'),
@@ -29,7 +28,6 @@ INSERT INTO author_research_area (author_id, area_label) VALUES
  (12, 'Machine Learning'),
  (13, 'Deep Learning');
 
--- reviewers: 1,3,4,5,7,8,10,11,13   (3,4,7,10,11 are reviewer-only; 1,5,8,13 have both roles)
 INSERT INTO reviewer (reviewer_id, years_experience) VALUES
  (1, 4), (3, 8), (4, 5), (5, 3), (7, 10), (8, 2), (10, 0), (11, 6), (13, 4);
 
@@ -66,7 +64,6 @@ INSERT INTO conference_reviewer (conference_id, reviewer_id) VALUES
  (2, 1), (2, 3), (2, 4), (2, 7), (2, 11), (2, 13),
  (3, 7), (3, 10), (3, 11);
 
--- track 3 (CADS) and track 6 (SRLT) are empty
 INSERT INTO track (track_id, conference_id, name, description, research_area, coordinator_id) VALUES
  (1, 1, 'Query Processing',        'Query optimisation and execution.',       'Databases',        3),
  (2, 1, 'Data Management for ML',  'Data systems that support ML workloads.', 'Machine Learning', 4),
@@ -75,7 +72,6 @@ INSERT INTO track (track_id, conference_id, name, description, research_area, co
  (5, 2, 'Applied Machine Learning','Applications of ML in industry.',         'Machine Learning', 11),
  (6, 3, 'Language Models',         'Language models for Turkic languages.',   'Natural Language Processing', 11);
 
--- session 2 (Astana, empty) is removed by task 4.2; session 4 (Tashkent, empty) must stay
 INSERT INTO conference_session (session_id, conference_id, title, session_date, start_time, end_time, room_label, chair_id) VALUES
  (1, 1, 'Query Optimization I',    '2026-06-16', '10:00', '12:00', 'Room A1', 3),
  (2, 1, 'Late-Breaking Results',   '2026-06-17', '14:00', '15:30', 'Room B2', 4),
@@ -123,7 +119,6 @@ INSERT INTO paper (paper_id, track_id, title, abstract, submission_date, status,
      'Compressing mixture-of-experts models for edge deployment.',
      '2026-02-27', 'under review', NULL);
 
--- exactly one corresponding author per paper
 INSERT INTO paper_author (paper_id, author_id, author_position, is_corresponding) VALUES
  (1, 5, 1, TRUE),  (1, 6, 2, FALSE),
  (2, 9, 1, TRUE),  (2, 13, 2, FALSE),
@@ -154,7 +149,6 @@ INSERT INTO paper_keyword (paper_id, keyword) VALUES
  (12, 'recommender systems'),
  (13, 'mixture of experts'), (13, 'edge AI');
 
--- every paper has at least one version; gaps allowed (paper 3: v1, v3)
 INSERT INTO paper_version (paper_id, version_no, file_location, uploaded_at, change_note) VALUES
  (1, 1, 'papers/1/v1.pdf', '2026-02-01 10:15:00', NULL),
  (1, 2, 'papers/1/v2.pdf', '2026-05-10 18:30:00', 'Camera-ready version'),
@@ -174,8 +168,6 @@ INSERT INTO paper_version (paper_id, version_no, file_location, uploaded_at, cha
  (12, 1, 'papers/12/v1.pdf', '2026-02-25 19:00:00', NULL),
  (13, 1, 'papers/13/v1.pdf', '2026-02-27 07:55:00', NULL);
 
--- 18 completed reviews; no self-reviews; reviewers belong to the conference pool.
--- Review counts: r3=4, r4=4, r7=3, r11=2, r13=2, r1=1, r5=1, r8=1, r10=0  (avg = 2.0)
 INSERT INTO review (review_id, paper_id, reviewer_id, overall_score, recommendation,
                     comments_for_authors, confidential_comments, review_submission_date) VALUES
  (1,  1, 3,  5, 'accept', 'Strong paper with convincing experiments.', NULL,                    '2026-03-20'),
@@ -197,7 +189,6 @@ INSERT INTO review (review_id, paper_id, reviewer_id, overall_score, recommendat
  (17, 12, 13,5, 'accept', 'Very strong empirical results.',             NULL,                    '2026-04-18'),
  (18, 13, 7, 3, 'accept', 'Interesting but preliminary.',               NULL,                    '2026-04-20');
 
--- move identity sequences past the explicit ids
 SELECT setval(pg_get_serial_sequence('app_user', 'user_id'),                (SELECT MAX(user_id)       FROM app_user));
 SELECT setval(pg_get_serial_sequence('conference', 'conference_id'),        (SELECT MAX(conference_id) FROM conference));
 SELECT setval(pg_get_serial_sequence('track', 'track_id'),                  (SELECT MAX(track_id)      FROM track));
